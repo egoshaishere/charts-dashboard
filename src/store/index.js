@@ -103,8 +103,77 @@ const multiChartModule = {
         // },
       ],
     },
+    apexChartData: {
+      series: [
+        {
+          name: "Desktops",
+          data: [10, 41, 35, 51, 49, 62, 69, 91, 148],
+        },
+      ],
+      chartOptions: {
+        chart: {
+          height: 600,
+          type: "line",
+          zoom: {
+            enabled: false,
+          },
+        },
+        dataLabels: {
+          enabled: false,
+        },
+        stroke: {
+          curve: "straight",
+        },
+        title: {
+          text: "Product Trends by Month",
+          align: "left",
+        },
+        grid: {
+          row: {
+            colors: ["#f3f3f3", "transparent"], // takes an array which will be repeated on columns
+            opacity: 0.5,
+          },
+        },
+        xaxis: {
+          categories: [
+            "Jan",
+            "Feb",
+            "Mar",
+            "Apr",
+            "May",
+            "Jun",
+            "Jul",
+            "Aug",
+            "Sep",
+          ],
+        },
+      },
+    }
   },
   mutations: {
+    updateApex(state) {
+
+      this.$refs.radar.updateSeries([
+        {
+          name: "Series 1",
+          data: [1, 2, 3, 4], //ie [1,2,3,4]
+        },
+      ]);
+
+      this.$refs.radar.updateOptions({
+        xaxis: {
+          categories: ["a", "b", "c", "d"], //ie ["a","b","c","d"]
+        },
+      });
+      // state.apexChartData.chartOptions.xaxis.categories = ["a", 'b', 'c']
+      // let newData = [{
+      //   name: 'zaza',
+      //   data:  [100, 410, 350],
+      // }]
+      // state.apexChartData.series = newData
+
+
+    },
     gotData(state, payload) {
       console.log('mutation - gotData')
       console.log("payload", payload)
@@ -120,7 +189,7 @@ const multiChartModule = {
       state.timeseriesSymbolsResponse = payload
       state.timeseriesSymbolsRates = payload.rates
 
-      //для построения графика
+      //для построения графика условные обозначения на осях
       state.marks = Object.keys(payload.rates)
       state.chartData.labels = Object.keys(payload.rates)
 
@@ -141,6 +210,17 @@ const multiChartModule = {
         data: resultArr
       }
       state.chartData.datasets.push(locoObj)
+
+
+
+      //for apex
+      let locoApexObj = {
+        name: `Курс ${state.base} к  ${state.symbols}`,
+        data: resultArr
+      }
+      state.apexChartData.series.push(locoApexObj)
+      state.apexChartData.chartOptions.xaxis.categories = Object.keys(payload.rates)
+
     },
     gotTimeseriesSymbols(state, payload) {
       console.log('mutation - gotTimeseriesSymbols')
@@ -152,9 +232,10 @@ const multiChartModule = {
       state.timeseriesSymbolsResponse = payload
       state.timeseriesSymbolsRates = payload.rates
 
-      //для построения графика
-      state.marks = Object.keys(payload.rates)
-      state.chartData.labels = Object.keys(payload.rates)
+      //для построения графика обозначения на оси
+      let newMarks = Object.keys(payload.rates)
+      state.marks = newMarks
+      state.chartData.labels = newMarks
 
       let loco = Object.entries(payload.rates)
       let resultArr = []
@@ -166,9 +247,29 @@ const multiChartModule = {
         })
       })
       state.values = resultArr
+
+      //insert data into chart js
       state.chartData.datasets[0].label = `Курс ${state.base} к  ${state.symbols}`
       state.chartData.datasets[0].backgroundColor = 'red'
       state.chartData.datasets[0].data = resultArr;
+
+      //insert data into apexcharts
+      let newData = [{
+        name: `Курс ${state.base} к  ${state.symbols}`,
+        data: resultArr,
+      }]
+      state.apexChartData.series = newData
+
+      console.log(newMarks)
+      state.apexChartData.chartOptions = {
+        ...state.apexChartData.chartOptions,
+        ...{
+          xaxis: { categories: newMarks },
+        },
+      };
+
+
+      //state.apexChartData.chartOptions.xaxis.categories = Object.keys(payload.rates)
 
     },
     setBase(state, payload) {
@@ -228,6 +329,17 @@ const multiChartModule = {
     },
     chartData(state) {
       return state.chartData
+    },
+
+
+    apexData(state) {
+      return state.apexChartData
+    },
+    apexOptions(state) {
+      return state.apexChartData.chartOptions
+    },
+    apexSeries(state) {
+      return state.apexChartData.series
     }
   }
 }

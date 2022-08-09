@@ -115,7 +115,7 @@ export default {
             "Lorem ipsum dolor sit amet consectetur adipisicing elit. Sunt consequuntur eos eligendi illum minima adipisci deleniti, dicta mollitia enim explicabo fugiat quidem ducimus praesentium voluptates porro molestias non sequi animi!",
         },
         {
-          title: "Design video thumbnails",
+          title: "title",
           person: "Ryu",
           due: "20th Dec 2018",
           status: "complete",

@@ -6,6 +6,7 @@ import Charts from '../views/Charts.vue'
 import NotFound from '../views/404.vue'
 import MultiChartView from '../views/MultiChartView.vue'
 import Sandbox from '../views/Sandbox.vue'
+import ApexMultiCharts from '../views/ApexMultiChartView.vue'
 
 Vue.use(VueRouter)
 
@@ -29,6 +30,11 @@ const routes = [
     path: '/multicharts',
     name: 'multicharts',
     component: MultiChartView
+  },
+  {
+    path: '/apexmulticharts',
+    name: 'apexmulticharts',
+    component: ApexMultiCharts
   },
   {
     path: '/sandbox',
